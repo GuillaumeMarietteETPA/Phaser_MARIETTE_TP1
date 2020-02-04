@@ -24,6 +24,7 @@ var cursors;
 var stars;
 var scoreText;
 var bomb;
+var jump = 0;
 
 
 function preload(){
@@ -101,10 +102,22 @@ function update(){
 		player.setVelocityX(0);
 	}
 	
-	if(cursors.up.isDown && player.body.touching.down){
+	if(cursors.up.isDown && !player.body.touching.down && jump < 2){
+		jump++;
 		player.setVelocityY(-330);
 	} 
-	
+
+	if(cursors.up.isDown && jump < 2){
+		jump++;
+		player.setVelocityY(-330);
+	} 
+
+	if (player.body.touching.down) {
+         jump = 0;
+     }
+
+
+
 }
 function hitBomb(player, bomb){
 	this.physics.pause();
