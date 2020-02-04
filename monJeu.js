@@ -33,7 +33,7 @@ function preload(){
 	this.load.image('sol1','assets/sol1.png');
 	this.load.image('branche','assets/miniplatform.png');
 	this.load.image('bomb','assets/cheese.png');
-	this.load.spritesheet('perso','assets/dino.png',{frameWidth: 31, frameHeight: 34});
+	this.load.spritesheet('perso','assets/dino3.png',{frameWidth: 31, frameHeight: 34});
 }
 
 
