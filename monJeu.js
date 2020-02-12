@@ -5,8 +5,8 @@ var config = {
 physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 300 },
-            debug: true
+            gravity: { y: 500 },
+            debug: false
         }
     },
 scene: {
@@ -25,6 +25,7 @@ var stars;
 var scoreText;
 var bomb;
 var jump = 0;
+var verif = 0;
 
 
 function preload(){
@@ -52,7 +53,6 @@ function create(){
 	
 	player = this.physics.add.sprite(100,450,'perso');
 	player.setCollideWorldBounds(true);
-	player.setBounce(0.2);
 	player.body.setGravityY(000);
 	this.physics.add.collider(player,platforms);
 	
@@ -102,19 +102,25 @@ function update(){
 		player.setVelocityX(0);
 	}
 	
-	if(cursors.up.isDown && !player.body.touching.down && jump < 2){
-		jump++;
-		player.setVelocityY(-330);
-	} 
+		if (cursors.up.isDown && player.body.touching.down && jump === 0){
+			player.setVelocityY(-430);
+			jump = 1;
+			verif = 0;
+		} 
 
-	if(cursors.up.isDown && player.body.touching.down){
-		player.setVelocityY(-330);
-	} 
+		if (cursors.up.isDown){
+			verif = 1;
+			
+		} 
 
-	if (player.body.touching.down) {
-         jump = 0;
-     }
-
+		if (jump === 1 && cursors.up.isDown && verif === 1) {
+			player.setVelocityY(-430);
+			jump = 0;
+		}
+		
+	
+		
+	
 
 
 }
