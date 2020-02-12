@@ -118,7 +118,9 @@ function update(){
 			jump = 0;
 		}
 		
-	
+	if(cursors.down.isDown){
+		player.setVelocityY(700);
+	}
 		
 	
 
