@@ -17,15 +17,19 @@ scene: {
 };
 
 var game = new Phaser.Game(config);
-var score = 0;
-var platforms;
-var player;
-var cursors; 
-var stars;
-var scoreText;
-var bomb;
-var jump = 0;
-var verif = 0;
+
+
+	var score = 0;
+	var platforms;
+	var player;
+	var cursors; 
+	var stars;
+	var scoreText;
+	var bomb;
+	var jump = 0;
+	var verif = 0;
+	var pvbar;
+	var pv = 3;
 
 
 function preload(){
@@ -35,7 +39,13 @@ function preload(){
 	this.load.image('sol1','assets/sol1.png');
 	this.load.image('branche','assets/miniplatform.png');
 	this.load.image('bomb','assets/cheese.png');
+	this.load.image('coeur1','assets/coeur1.png');
+	this.load.image('coeur2','assets/coeur2.png');
+	this.load.image('coeur3','assets/coeur3.png');
+	
 	this.load.spritesheet('perso','assets/dino3.png',{frameWidth: 31, frameHeight: 34});
+	this.load.spritesheet('life','assets/lifepoint.png',{frameWidth: 175, frameHeight: 16});
+
 }
 
 
@@ -71,6 +81,17 @@ function create(){
 		frameRate: 20
 	});
 	
+	this.anims.create({
+		key:'lifea',
+		frames: this.anims.generateFrameNumbers('life', {start: 0, end: 3}),
+		frameRate: 1
+	});
+	
+	
+	
+	
+	
+	
 	stars = this.physics.add.group({
 		key: 'etoile',
 		repeat:11,
@@ -81,11 +102,26 @@ function create(){
 	this.physics.add.overlap(player,stars,collectStar,null,this);
 
 	scoreText = this.add.text(16,16, 'score: 0', {fontSize: '32px', fill:'#000'});
+	//pvbar = this.add.text(670,16, 'Vie 3', {fontSize: '32px', fill:'#000'});
+	
 	bombs = this.physics.add.group();
 	this.physics.add.collider(bombs,platforms);
 	this.physics.add.collider(player,bombs, hitBomb, null, this);
-}
+	
+	//pvbar = this.physics.add.staticGroup();
+	//pvbar.create(700,35,'life');
 
+	coeur1 = this.physics.add.staticGroup();
+	coeur2 = this.physics.add.staticGroup();
+	coeur3 = this.physics.add.staticGroup();
+	
+	coeur1.create(700,40,'coeur1');
+	coeur2.create(650,40,'coeur2');
+	coeur3.create(600,40,'coeur3');
+
+}
+	
+	
 
 
 function update(){
@@ -119,16 +155,32 @@ function update(){
 		}
 		
 	
-		
+	if(cursors.down.isDown){
+		player.setVelocityY(700);
+	}
 	
 
-
 }
+
 function hitBomb(player, bomb){
-	this.physics.pause();
-	player.setTint(0xff0000);
-	player.anims.play('turn');
-	gameOver=true;
+	pv --;
+	//pvbar.setText('Vie: '+pv);
+	
+	
+	if (pv == 2)	{
+	coeur3.clear(true);
+	}
+	if (pv == 1)	{
+	coeur2.clear(true);
+	}
+	
+	if (pv == 0)	{
+		coeur1.clear(true);
+		this.physics.pause();
+		player.setTint(0xff0000);
+		player.anims.play('turn');
+		gameOver=true;
+	}
 }
 
 function collectStar(player, star){
