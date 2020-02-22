@@ -24,6 +24,7 @@ var game = new Phaser.Game(config);
 	var player;
 	var cursors; 
 	var stars;
+	var potion;
 	var scoreText;
 	var bomb;
 	var jump = 0;
@@ -42,6 +43,7 @@ function preload(){
 	this.load.image('coeur1','assets/coeur1.png');
 	this.load.image('coeur2','assets/coeur2.png');
 	this.load.image('coeur3','assets/coeur3.png');
+	this.load.image('potion','assets/potion.png');
 	
 	this.load.spritesheet('perso','assets/dino3.png',{frameWidth: 31, frameHeight: 34});
 	this.load.spritesheet('life','assets/lifepoint.png',{frameWidth: 175, frameHeight: 16});
@@ -80,17 +82,7 @@ function create(){
 		frames: [{key: 'perso', frame:0}],
 		frameRate: 20
 	});
-	
-	this.anims.create({
-		key:'lifea',
-		frames: this.anims.generateFrameNumbers('life', {start: 0, end: 3}),
-		frameRate: 1
-	});
-	
-	
-	
-	
-	
+
 	
 	stars = this.physics.add.group({
 		key: 'etoile',
@@ -154,7 +146,6 @@ function update(){
 			jump = 0;
 		}
 		
-
 	
 	if(cursors.down.isDown){
 		player.setVelocityY(700);
@@ -201,4 +192,25 @@ function collectStar(player, star){
 		bomb.setCollideWorldBounds(true);
 		bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
 	}
+	if(score == 300 || score == 600 || score == 900 || score == 1200 || score == 1800 || score == 2400) {
+		potion = this.physics.add.sprite(450,450,'potion');
+		this.physics.add.collider(potion,platforms);
+		this.physics.add.overlap(player,potion,collectPotion,null,this);
+	}
+	
+}
+
+function collectPotion(player,potion){
+	potion.disableBody(true,true);
+	
+	if (pv == 2)	{
+	pv ++;
+	coeur3.create(600,40,'coeur3');
+	}
+	
+	if (pv == 1)	{
+	pv ++;
+	coeur2.create(650,40,'coeur2');
+	}
+	
 }
