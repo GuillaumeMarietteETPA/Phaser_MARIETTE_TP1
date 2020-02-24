@@ -6,7 +6,7 @@ physics: {
         default: 'arcade',
         arcade: {
             gravity: { y: 500 },
-            debug: false
+            debug: true
         }
     },
 scene: {
@@ -16,12 +16,16 @@ scene: {
 	}
 };
 
+
+
 var game = new Phaser.Game(config);
 
 
 	var score = 0;
+	var wall;
 	var platforms;
 	var player;
+	var ennemy;
 	var cursors; 
 	var stars;
 	var potion;
@@ -44,16 +48,20 @@ function preload(){
 	this.load.image('coeur2','assets/coeur2.png');
 	this.load.image('coeur3','assets/coeur3.png');
 	this.load.image('potion','assets/potion.png');
+	this.load.image('wall','assets/wall.png');
 	
+	this.load.spritesheet('fire','assets/fire.png'),{frameWidth: 8, frameHeight: 8});
 	this.load.spritesheet('perso','assets/dino3.png',{frameWidth: 31, frameHeight: 34});
-	this.load.spritesheet('life','assets/lifepoint.png',{frameWidth: 175, frameHeight: 16});
-
+	this.load.spritesheet('ennemy','assets/knight.png',{frameWidth: 11, frameHeight: 23});
 }
 
 
 
 function create(){
 	this.add.image(400,300,'background');
+	wall = this.physics.add.staticGroup();
+	wall.create(0,600,'wall');
+	wall.create(800,600,'wall');
 
 	platforms = this.physics.add.staticGroup();
 	platforms.create(400,568,'sol1').setScale(2).refreshBody();
@@ -110,6 +118,29 @@ function create(){
 	coeur1.create(700,40,'coeur1');
 	coeur2.create(650,40,'coeur2');
 	coeur3.create(600,40,'coeur3');
+	
+	ennemy = this.physics.add.sprite(6,450,'ennemy');
+	ennemy.setCollideWorldBounds(true);
+	ennemy.body.setGravityY(000);
+	this.physics.add.collider(ennemy,platforms);
+	this.physics.add.collider(player,ennemy);
+	this.physics.add.collider(wall,ennemy);
+	
+	this.anims.create({
+		key:'ennemyR',
+		frames: this.anims.generateFrameNumbers('perso', {start: 0, end: 7}),
+		frameRate: 10,
+		repeat: -1
+	});
+
+	this.anims.create({
+		key:'ennemystop',
+		frames: [{key: 'ennemy', frame:0}],
+		frameRate: 20
+	});
+
+
+
 
 }
 	
@@ -150,6 +181,14 @@ function update(){
 	if(cursors.down.isDown){
 		player.setVelocityY(700);
 	}
+	
+		
+		if(ennemy.body.touching.left){
+			ennemy.setVelocityX(150);
+		}
+		else if(ennemy.body.touching.right) {
+			ennemy.setVelocityX(-150);
+		}
 	
 
 }
