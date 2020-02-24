@@ -16,12 +16,16 @@ scene: {
 	}
 };
 
+
+
 var game = new Phaser.Game(config);
 
 
 	var score = 0;
+	var wall;
 	var platforms;
 	var player;
+	var ennemy;
 	var cursors; 
 	var stars;
 	var potion;
@@ -44,16 +48,21 @@ function preload(){
 	this.load.image('coeur2','assets/coeur2.png');
 	this.load.image('coeur3','assets/coeur3.png');
 	this.load.image('potion','assets/potion.png');
+	this.load.image('wall','assets/wall.png');
+	
 	
 	this.load.spritesheet('perso','assets/dino3.png',{frameWidth: 31, frameHeight: 34});
-	this.load.spritesheet('life','assets/lifepoint.png',{frameWidth: 175, frameHeight: 16});
-
+	this.load.spritesheet('ennemy','assets/knight.png',{frameWidth: 11, frameHeight: 23});
+	this.load.spritesheet('fire','assets/knight.png',{frameWidth: 8, frameHeight: 8});
 }
 
 
 
 function create(){
 	this.add.image(400,300,'background');
+	wall = this.physics.add.staticGroup();
+	wall.create(0,600,'wall');
+	wall.create(800,600,'wall');
 
 	platforms = this.physics.add.staticGroup();
 	platforms.create(400,568,'sol1').setScale(2).refreshBody();
@@ -110,6 +119,29 @@ function create(){
 	coeur1.create(700,40,'coeur1');
 	coeur2.create(650,40,'coeur2');
 	coeur3.create(600,40,'coeur3');
+	
+	ennemy = this.physics.add.sprite(450,450,'ennemy');
+	ennemy.setCollideWorldBounds(true);
+	ennemy.body.setGravityY(000);
+	this.physics.add.collider(ennemy,platforms);
+	this.physics.add.collider(player,ennemy, hitBomb, null, this);
+	this.physics.add.collider(wall,ennemy);
+	
+	this.anims.create({
+		key:'ennemyR',
+		frames: this.anims.generateFrameNumbers('ennemy', {start: 0, end: 7}),
+		frameRate: 10,
+		repeat: -1
+	});
+
+	this.anims.create({
+		key:'ennemystop',
+		frames: [{key: 'ennemy', frame:0}],
+		frameRate: 20
+	});
+
+
+
 
 }
 	
@@ -151,10 +183,32 @@ function update(){
 		player.setVelocityY(700);
 	}
 	
+		
+		
+		if(ennemy.body.touching.left){
+			ennemy.setVelocityX(150);
+			ennemy.setFlipX(false);
+		}
+		else if(ennemy.body.touching.right) {
+			ennemy.setVelocityX(-150);
+			ennemy.setFlipX(true);
+		}
+		
+	
+	if(ennemy.velocityX == 150) {
+	ennemy.anims.play('ennemyR', true);
+	}
+	else if(ennemy.velocityX == -150) {
+	ennemy.anims.play('ennemyR', true);
+	}
+	else{
+	ennemy.anims.play('ennemystop', true);
+	}
+	
 
 }
 
-function hitBomb(player, bomb){
+function hitBomb(player, bomb, ennemy){
 	pv --;
 	//pvbar.setText('Vie: '+pv);
 	
@@ -174,6 +228,8 @@ function hitBomb(player, bomb){
 		gameOver=true;
 	}
 }
+
+
 
 function collectStar(player, star){
 	star.disableBody(true,true);
