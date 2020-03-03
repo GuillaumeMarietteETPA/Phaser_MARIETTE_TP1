@@ -160,23 +160,28 @@ function update(){
 	}else{
 		player.anims.play('stop', true);
 		player.setVelocityX(0);
+		
 	}
 	
-		if (cursors.up.isDown && player.body.touching.down && jump === 0){
-			player.setVelocityY(-430);
-			jump = 1;
-			verif = 0;
-		} 
+	if (player.body.touching.down) {
+		jump = 0;
+	}
 
-		if (cursors.up.isDown){
-			verif = 1;
-			
-		} 
+	if (cursors.up.isDown && player.body.touching.down) {
+		player.setVelocityY(-350);
 
-		if (jump === 1 && cursors.up.isDown && verif === 1) {
-			player.setVelocityY(-430);
-			jump = 0;
+	}
+
+	if (cursors.up.isUp && !player.body.touching.down && jump == 0) {
+		jump = 1;
+	}
+
+	if (jump == 1) {
+		if (cursors.up.isDown) {
+			player.setVelocityY(-300);
+			jump = 2;
 		}
+	}
 		
 	
 	if(cursors.down.isDown){
